@@ -1,6 +1,6 @@
 boolean showCoords = false; //<>//
-StringDict pBoard;
-StringDict sBoard;
+JSONObject pBoard;
+JSONObject sBoard;
 int n = 3;
 int player = 0;
 PShape[] gPiece;
@@ -10,6 +10,8 @@ int beginAnimation = 0;
 String lastPlay = "Set Up";
 boolean inPromotion = false;
 String rollUp = "";
+JSONObject save;
+String  saveName = "Test";
 
 void setup() {
   size(750, 750);
@@ -29,27 +31,28 @@ void setup() {
   gPiece[3].disableStyle();
   gPiece[4].disableStyle();
   gPiece[5].disableStyle();
-  pBoard = new StringDict();
-  sBoard = new StringDict();
+  pBoard = new JSONObject();
+  sBoard = new JSONObject();
+  save = new JSONObject();
   for (int a = 1; a < n+1; a++) {  
     for (int b = 0; b < 8; b++) {
       for (int c = 1; c < 4+1; c++) {
         if (c == 1) {
           if (b == 0 || b == 7) {
-            pBoard.set(a+""+(char)(b+'a')+""+c, a+"Ri");
+            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Ri");
           } else if (b == 1 || b == 6) {
-            pBoard.set(a+""+(char)(b+'a')+""+c, a+"N");
+            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"N");
           } else if (b == 2 || b == 5) {
-            pBoard.set(a+""+(char)(b+'a')+""+c, a+"B");
+            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"B");
           } else if ((a%2 == 0)? b == 4 : b == 3) {
-            pBoard.set(a+""+(char)(b+'a')+""+c, a+"Q");
+            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Q");
           } else if ((a%2 == 0)? b == 3 : b == 4) {
-            pBoard.set(a+""+(char)(b+'a')+""+c, a+"Ki");
+            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Ki");
           }
         } else if (c == 2) {
-          pBoard.set(a+""+(char)(b+'a')+""+c, a+"p");
+          pBoard.setString(a+""+(char)(b+'a')+""+c, a+"p");
         } else {
-          pBoard.set(a+""+(char)(b+'a')+""+c, "");
+          pBoard.setString(a+""+(char)(b+'a')+""+c, "");
         }
       }
     }
@@ -64,22 +67,23 @@ void draw() {
   resetMatrix();
   fill(color(map(player%n, 0, n, 0, 255), 255, 255));
   rect(0, 0, 50, 50);
-  for (String b : pBoard.keyArray()) {
+  for (Object o : pBoard.keys()) {
+    String b = o.toString();
     if (pBoard.get(b) != "") {
-      PVector pos = new PVector(int(sBoard.get(b).split("/")[0]), int(sBoard.get(b).split("/")[1]));
-      fill((b == selected) ? 127 : color(map(side(pBoard.get(b)) - '1', 0, n, 0, 255), 255, 255));
+      PVector pos = new PVector(int(sBoard.getString(b).split("/")[0]), int(sBoard.getString(b).split("/")[1]));
+      fill((b == selected) ? 127 : color(map(side(pBoard.getString(b)) - '1', 0, n, 0, 255), 255, 255));
       stroke((PVector.dist(pos, mouse) < 15) ? 0 : 127);
-      if (piece(pBoard.get(b)) == 'p' || piece(pBoard.get(b)) == 'P') {
+      if (piece(pBoard.getString(b)) == 'p' || piece(pBoard.getString(b)) == 'P') {
         shape(gPiece[0], pos.x, pos.y);
-      } else if (piece(pBoard.get(b)) == 'R') {
+      } else if (piece(pBoard.getString(b)) == 'R') {
         shape(gPiece[1], pos.x, pos.y);
-      } else if (piece(pBoard.get(b)) == 'N') {
+      } else if (piece(pBoard.getString(b)) == 'N') {
         shape(gPiece[2], pos.x, pos.y);
-      } else if (piece(pBoard.get(b)) == 'B') {
+      } else if (piece(pBoard.getString(b)) == 'B') {
         shape(gPiece[3], pos.x, pos.y);
-      } else if (piece(pBoard.get(b)) == 'Q') {
+      } else if (piece(pBoard.getString(b)) == 'Q') {
         shape(gPiece[4], pos.x, pos.y);
-      } else if (piece(pBoard.get(b)) == 'K') {
+      } else if (piece(pBoard.getString(b)) == 'K') {
         shape(gPiece[5], pos.x, pos.y);
       }
     }
@@ -88,16 +92,17 @@ void draw() {
     showHint();
   }
   if (showCoords) {
-    for (String b : pBoard.keyArray()) {
+    for (Object o : pBoard.keys()) {
+      String b = o.toString();
       fill(127);
-      text(b, int(sBoard.get(b).split("/")[0]), int(sBoard.get(b).split("/")[1]));
+      text(b, int(sBoard.getString(b).split("/")[0]), int(sBoard.getString(b).split("/")[1]));
     }
   }
   if (inPromotion) {
     stroke(0);
     fill(127);
     rect(350, 350, 100, 100);
-    fill(color(map(side(pBoard.get(selected)) - '1', 0, n, 0, 255), 255, 255));
+    fill(color(map(side(pBoard.getString(selected)) - '1', 0, n, 0, 255), 255, 255));
     shape(gPiece[1], 375, 375);
     shape(gPiece[2], 425, 375);
     shape(gPiece[3], 375, 425);
@@ -116,11 +121,11 @@ void draw() {
 }
 
 void Board(int p, float s) {
-  sBoard = new StringDict();
+  sBoard = new JSONObject();
   rotate(PI/p /*+ PI/p * player * 2*/);
   if (beginAnimation != 0) {
     //rotate(PI/p/15*(frameCount - beginAnimation));
-    sBoard = new StringDict();
+    sBoard = new JSONObject();
     if (beginAnimation + 3/*0*/ == frameCount) {
       player++;
       beginAnimation = 0;
@@ -142,9 +147,9 @@ void Quarter(float r, float d, boolean b, int c, int p)
       float y = j*r/4;
       float x = 0;
       if ((i+j)%2 == 0)
-        fill(b ? color(map(round(c/2), 0, p, 0, 255), 255, 75) : color(map(round(c/2), 0, p, 0, 255), 75, 255));
+        fill(b ? color(map(round(c/2), 0, p, 0, 255), 255, 15) : color(map(round(c/2), 0, p, 0, 255), 75, 255));
       else
-        fill(b ? color(map(round(c/2), 0, p, 0, 255), 75, 255) : color(map(round(c/2), 0, p, 0, 255), 255, 75));
+        fill(b ? color(map(round(c/2), 0, p, 0, 255), 75, 200) : color(map(round(c/2), 0, p, 0, 255), 255, 75));
       noStroke();
       beginShape();
       vertex(x, y);
@@ -154,7 +159,7 @@ void Quarter(float r, float d, boolean b, int c, int p)
       endShape(CLOSE);
       if (!sBoard.hasKey(id)) {
         PVector pos = new PVector(x, y).lerp(new PVector(x+r/4*cos(a), y+r/4+r/4*sin(a)), 0.5);
-        sBoard.set(id, (int)screenX(pos.x, pos.y) + "/" + (int)screenY(pos.x, pos.y));
+        sBoard.setString(id, (int)screenX(pos.x, pos.y) + "/" + (int)screenY(pos.x, pos.y));
       }
       if (j==3) {
         translate(r/4*cos(a), r/4*sin(a));
@@ -170,10 +175,11 @@ void showHint() {
   stroke(255);
   noFill();
   blendMode(DIFFERENCE);
-  for (String b : pBoard.keyArray()) {
-    PVector pos = new PVector(int(sBoard.get(b).split("/")[0]), int(sBoard.get(b).split("/")[1]));
+  for (Object o : pBoard.keys()) {
+    String b = o.toString();
+    PVector pos = new PVector(int(sBoard.getString(b).split("/")[0]), int(sBoard.getString(b).split("/")[1]));
     if (validity(b)) {
-      switch(piece(pBoard.get(selected))) {
+      switch(piece(pBoard.getString(selected))) {
       case 'P':
       case 'p':
         shape(gPiece[0], pos.x, pos.y);
@@ -207,17 +213,17 @@ boolean validity(String from, String to) {
   if (
     from != to &&
     pBoard.hasKey(from) && pBoard.get(from) != "" &&
-    (pBoard.get(to) == "" || army(pBoard.get(to)) != army(pBoard.get(from))) &&
-    (army(pBoard.get(from)) - '1') % n == player % n
+    (pBoard.getString(to) == "" || army(pBoard.getString(to)) != army(pBoard.getString(from))) &&
+    (army(pBoard.getString(from)) - '1') % n == player % n
     ) {
     StringList list = new StringList();
-    switch(piece(pBoard.get(from))) {
+    switch(piece(pBoard.getString(from))) {
     case 'p':
-      if (flag(pBoard.get(from)) == 'e') {
+      if (flag(pBoard.getString(from)) == 'e') {
         recursive(list, from, Dir.E, Opt.CAPTURE_ONLY);
         recursive(list, from, Dir.W, Opt.CAPTURE_ONLY);
       }
-      if (army(pBoard.get(from)) == side(from)) {
+      if (army(pBoard.getString(from)) == side(from)) {
         recursive(list, from, Dir.NW, Opt.CAPTURE_ONLY);
         recursive(list, from, Dir.NE, Opt.CAPTURE_ONLY);
         list = reduce(list, from, 1);
@@ -271,11 +277,11 @@ boolean validity(String from, String to) {
       recursive(list, from, Dir.SW);
       recursive(list, from, Dir.NW);
       list = reduce(list, from, 1);
-      if (flag(pBoard.get(from)) == 'i') { // Se o rei não foi movido
-        if (pBoard.get((char)army(pBoard.get(from)) + "f1") == "" && pBoard.get((char)army(pBoard.get(from)) + "g1") == "" && flag(pBoard.get((char)army(pBoard.get(from)) + "h1")) == 'i') {
-          list.append((char)army(pBoard.get(from)) + "g1");
-        } else if (pBoard.get((char)army(pBoard.get(from)) + "b1") == "" && pBoard.get((char)army(pBoard.get(from)) + "c1") == "" && pBoard.get((char)army(pBoard.get(from)) + "d1") == "" && flag(pBoard.get((char)army(pBoard.get(from)) + "a1")) == 'i') {
-          list.append((char)army(pBoard.get(from)) + "c1");
+      if (flag(pBoard.getString(from)) == 'i') { // Se o rei não foi movido
+        if (pBoard.getString((char)army(pBoard.getString(from)) + "f1") == "" && pBoard.getString((char)army(pBoard.getString(from)) + "g1") == "" && flag(pBoard.getString((char)army(pBoard.getString(from)) + "h1")) == 'i') {
+          list.append((char)army(pBoard.getString(from)) + "g1");
+        } else if (pBoard.getString((char)army(pBoard.getString(from)) + "b1") == "" && pBoard.getString((char)army(pBoard.getString(from)) + "c1") == "" && pBoard.getString((char)army(pBoard.getString(from)) + "d1") == "" && flag(pBoard.getString((char)army(pBoard.getString(from)) + "a1")) == 'i') {
+          list.append((char)army(pBoard.getString(from)) + "c1");
         }
       }
       return list.hasValue(to);
@@ -347,12 +353,12 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
         square == origin ||                                                                    // Quadrado inicial
         o == Opt.JUMP ||                                                                       // Ignora peças
         (pBoard.get(square) == "" ||                                                           // Quadrado Vazio
-        (pBoard.get(square) != "" && army(pBoard.get(origin)) != army(pBoard.get(square))))    // Para antes da própria peça
+        (pBoard.get(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square))))    // Para antes da própria peça
         )
       {
         switch(d) {
         case N:
-          if (level(square) == '1' && side(origin) != side(square) || (pBoard.get(square) != "" && army(pBoard.get(origin)) != army(pBoard.get(square)))) {
+          if (level(square) == '1' && side(origin) != side(square) || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else if (level(square) != '4') {
@@ -370,7 +376,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
           }
           break;
         case S:
-          if (level(square) == '1' && side(origin) == side(square) || (pBoard.get(square) != "" && army(pBoard.get(origin)) != army(pBoard.get(square)))) {
+          if (level(square) == '1' && side(origin) == side(square) || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -380,7 +386,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
             break;
           }
         case E:
-          if (letter(square) == 'h' || (pBoard.get(square) != "" && army(pBoard.get(origin)) != army(pBoard.get(square)))) {
+          if (letter(square) == 'h' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -389,7 +395,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
             break;
           }
         case W:
-          if (letter(square) == 'a' || (pBoard.get(square) != "" && army(pBoard.get(origin)) != army(pBoard.get(square)))) {
+          if (letter(square) == 'a' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -398,7 +404,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
             break;
           }
         case NE:
-          if (level(square) == '1' && side(origin) != side(square) || letter(square) == 'h' || (pBoard.get(square) != "" && army(pBoard.get(origin)) != army(pBoard.get(square)))) {
+          if (level(square) == '1' && side(origin) != side(square) || letter(square) == 'h' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else if (level(square) != '4') {
@@ -416,7 +422,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
           }
           break;
         case NW:
-          if (level(square) == '1' && side(origin) != side(square) || letter(square) == 'a' || (pBoard.get(square) != "" && army(pBoard.get(origin)) != army(pBoard.get(square)))) {
+          if (level(square) == '1' && side(origin) != side(square) || letter(square) == 'a' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else if (level(square) != '4') {
@@ -434,7 +440,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
           }
           break;
         case SE:
-          if (level(square) == '1' && side(origin) == side(square) || letter(square) == 'h' || (pBoard.get(square) != "" && army(pBoard.get(origin)) != army(pBoard.get(square)))) {
+          if (level(square) == '1' && side(origin) == side(square) || letter(square) == 'h' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -444,7 +450,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
             break;
           }
         case SW:
-          if (level(square) == '1' && side(origin) == side(square) || letter(square) == 'a' || (pBoard.get(square) != "" && army(pBoard.get(origin)) != army(pBoard.get(square)))) {
+          if (level(square) == '1' && side(origin) == side(square) || letter(square) == 'a' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -525,7 +531,8 @@ StringList reduce(StringList list, String origin, int r) {
 
 StringList invert(StringList list) {
   StringList result = new StringList();
-  for (String s : pBoard.keyArray()) {
+  for (Object o : pBoard.keys()) {
+    String s = o.toString();
     if (!list.hasValue(s)) {
       result.append(s);
     }
@@ -534,9 +541,11 @@ StringList invert(StringList list) {
 }
 
 boolean xeque(char side) {
-  for (String k : pBoard.keyArray()) {
-    if (pBoard.get(k) != "" && army(pBoard.get(k)) == side && piece(pBoard.get(k)) == 'K') {
-      for (String b : pBoard.keyArray()) {
+  for (Object o : pBoard.keys()) {
+    String k = o.toString();
+    if (pBoard.get(k) != "" && army(pBoard.getString(k)) == side && piece(pBoard.getString(k)) == 'K') {
+    for (Object p : pBoard.keys()) {
+      String b = p.toString();
         if (pBoard.get(b) != "" && validity(b, k)) {
           println("XEQUE "+(char)side);
           return true;
@@ -552,53 +561,55 @@ void mousePressed() {
   PVector mouse = new PVector(mouseX, mouseY);
   if (inPromotion) {
     if (PVector.dist(new PVector(375, 375), mouse) < 20) {
-      pBoard.set(selected, (char)army(pBoard.get(selected)) + "R");
+      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "R");
     } else 
     if (PVector.dist(new PVector(425, 375), mouse) < 20) {
-      pBoard.set(selected, (char)army(pBoard.get(selected)) + "N");
+      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "N");
     } else 
     if (PVector.dist(new PVector(375, 425), mouse) < 20) {
-      pBoard.set(selected, (char)army(pBoard.get(selected)) + "B");
+      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "B");
     } else 
     if (PVector.dist(new PVector(425, 425), mouse) < 20) {
-      pBoard.set(selected, (char)army(pBoard.get(selected)) + "Q");
+      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "Q");
     } 
-    if (piece(pBoard.get(selected)) != 'p') {
+    if (piece(pBoard.getString(selected)) != 'p') {
       inPromotion = false;
       selected = "";
       beginAnimation = frameCount;
     }
   } else {
-    for (String b : pBoard.keyArray()) {
-      PVector pos = new PVector(int(sBoard.get(b).split("/")[0]), int(sBoard.get(b).split("/")[1]));
+    for (Object o : pBoard.keys()) {
+      String b = o.toString();
+      PVector pos = new PVector(int(sBoard.getString(b).split("/")[0]), int(sBoard.getString(b).split("/")[1]));
       if (PVector.dist(pos, mouse) < 20) {
         selected = b;
         if (validity(last, selected)) {
-          lastPlay = pBoard.get(last).charAt(1) + last + " → " + ((pBoard.get(selected) != "") ? pBoard.get(selected).charAt(1): "") + selected;
-          if (piece(pBoard.get(last)) == 'K' && flag(pBoard.get(last)) == 'i' && letter(selected) == 'g') { // Pq. Roque
-            pBoard.set((char)army(pBoard.get(last)) + "f1", (char)army(pBoard.get(last)) + "R");
-            pBoard.set((char)army(pBoard.get(last)) + "h1", "");
+          lastPlay = pBoard.getString(last).charAt(1) + last + " → " + ((pBoard.getString(selected) != "") ? pBoard.getString(selected).charAt(1): "") + selected;
+          if (piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selected) == 'g') { // Pq. Roque
+            pBoard.setString((char)army(pBoard.getString(last)) + "f1", (char)army(pBoard.getString(last)) + "R");
+            pBoard.setString((char)army(pBoard.getString(last)) + "h1", "");
             lastPlay = "O-O";
           }
-          if (piece(pBoard.get(last)) == 'K' && flag(pBoard.get(last)) == 'i' && letter(selected) == 'c') { // Gd. Roque
-            pBoard.set((char)army(pBoard.get(last)) + "d1", (char)army(pBoard.get(last)) + "R");
-            pBoard.set((char)army(pBoard.get(last)) + "a1", "");
+          if (piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selected) == 'c') { // Gd. Roque
+            pBoard.setString((char)army(pBoard.getString(last)) + "d1", (char)army(pBoard.getString(last)) + "R");
+            pBoard.setString((char)army(pBoard.getString(last)) + "a1", "");
             lastPlay = "O-O-O";
           }
           rollUp += lastPlay + "/n";
           println(lastPlay);
-          if (piece(pBoard.get(last)) == 'p' && level(last) == '2' && level(selected) == '4')
-            pBoard.set(last, pBoard.get(last) + "e");
-          if (flag(pBoard.get(last)) == 'e' && level(last) == '4' || flag(pBoard.get(last)) == 'i')
-            pBoard.set(last, pBoard.get(last).substring(0, 2));
-          pBoard.set(selected, pBoard.get(last));
-          pBoard.set(last, "");
-          if (piece(pBoard.get(selected)) == 'p' && level(selected) == '1') {
+          if (piece(pBoard.getString(last)) == 'p' && level(last) == '2' && level(selected) == '4')
+            pBoard.setString(last, pBoard.getString(last) + "e");
+          if (flag(pBoard.getString(last)) == 'e' && level(last) == '4' || flag(pBoard.getString(last)) == 'i')
+            pBoard.setString(last, pBoard.getString(last).substring(0, 2));
+          pBoard.setString(selected, pBoard.getString(last));
+          pBoard.setString(last, "");
+          if (piece(pBoard.getString(selected)) == 'p' && level(selected) == '1') {
             inPromotion = true;
           } else {
             selected = "";
             beginAnimation = frameCount;
           }
+          Save();
         }
         break;
       } else {
@@ -610,3 +621,6 @@ void mousePressed() {
     showCoords = !showCoords;
   }
 }
+  void Save(){
+    saveJSONObject(save, saveName + ".ncs");
+  }
