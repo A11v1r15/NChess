@@ -9,7 +9,6 @@ boolean fullPortal = false;
 int beginAnimation = 0;
 String lastPlay = "Set Up";
 boolean inPromotion = false;
-String rollUp = "";
 JSONObject save;
 String  saveName = "Test";
 
@@ -31,32 +30,36 @@ void setup() {
   gPiece[3].disableStyle();
   gPiece[4].disableStyle();
   gPiece[5].disableStyle();
-  pBoard = new JSONObject();
   sBoard = new JSONObject();
-  save = new JSONObject();
-  for (int a = 1; a < n+1; a++) {  
-    for (int b = 0; b < 8; b++) {
-      for (int c = 1; c < 4+1; c++) {
-        if (c == 1) {
-          if (b == 0 || b == 7) {
-            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Ri");
-          } else if (b == 1 || b == 6) {
-            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"N");
-          } else if (b == 2 || b == 5) {
-            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"B");
-          } else if ((a%2 == 0)? b == 4 : b == 3) {
-            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Q");
-          } else if ((a%2 == 0)? b == 3 : b == 4) {
-            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Ki");
+    pBoard = new JSONObject();
+    save = new JSONObject();
+    save.setJSONArray("log", new JSONArray());
+    save.setInt("players", n);
+    save.setInt("currentPlayer", player);
+    for (int a = 1; a < n+1; a++) {
+      for (int b = 0; b < 8; b++) {
+        for (int c = 1; c < 4+1; c++) {
+          if (c == 1) {
+            if (b == 0 || b == 7) {
+              pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Ri");
+            } else if (b == 1 || b == 6) {
+              pBoard.setString(a+""+(char)(b+'a')+""+c, a+"N");
+            } else if (b == 2 || b == 5) {
+              pBoard.setString(a+""+(char)(b+'a')+""+c, a+"B");
+            } else if ((a%2 == 0)? b == 4 : b == 3) {
+              pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Q");
+            } else if ((a%2 == 0)? b == 3 : b == 4) {
+              pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Ki");
+            }
+          } else if (c == 2) {
+            pBoard.setString(a+""+(char)(b+'a')+""+c, a+"p");
+          } else {
+            pBoard.setString(a+""+(char)(b+'a')+""+c, "");
           }
-        } else if (c == 2) {
-          pBoard.setString(a+""+(char)(b+'a')+""+c, a+"p");
-        } else {
-          pBoard.setString(a+""+(char)(b+'a')+""+c, "");
         }
       }
     }
-  }
+    save.setJSONObject("pBoard", pBoard);
 }
 
 void draw() {
@@ -69,7 +72,7 @@ void draw() {
   rect(0, 0, 50, 50);
   for (Object o : pBoard.keys()) {
     String b = o.toString();
-    if (pBoard.get(b) != "") {
+    if (!pBoard.get(b).equals("")) {
       PVector pos = new PVector(int(sBoard.getString(b).split("/")[0]), int(sBoard.getString(b).split("/")[1]));
       fill((b == selected) ? 127 : color(map(side(pBoard.getString(b)) - '1', 0, n, 0, 255), 255, 255));
       stroke((PVector.dist(pos, mouse) < 15) ? 0 : 127);
@@ -88,7 +91,7 @@ void draw() {
       }
     }
   }
-  if (pBoard.hasKey(selected) && pBoard.get(selected) != "") {
+  if (pBoard.hasKey(selected) && !pBoard.get(selected).equals("")) {
     showHint();
   }
   if (showCoords) {
@@ -212,8 +215,8 @@ boolean validity(String to) {
 boolean validity(String from, String to) {
   if (
     from != to &&
-    pBoard.hasKey(from) && pBoard.get(from) != "" &&
-    (pBoard.getString(to) == "" || army(pBoard.getString(to)) != army(pBoard.getString(from))) &&
+    pBoard.hasKey(from) && !pBoard.get(from).equals("") &&
+    (pBoard.getString(to).equals("") || army(pBoard.getString(to)) != army(pBoard.getString(from))) &&
     (army(pBoard.getString(from)) - '1') % n == player % n
     ) {
     StringList list = new StringList();
@@ -278,9 +281,9 @@ boolean validity(String from, String to) {
       recursive(list, from, Dir.NW);
       list = reduce(list, from, 1);
       if (flag(pBoard.getString(from)) == 'i') { // Se o rei não foi movido
-        if (pBoard.getString((char)army(pBoard.getString(from)) + "f1") == "" && pBoard.getString((char)army(pBoard.getString(from)) + "g1") == "" && flag(pBoard.getString((char)army(pBoard.getString(from)) + "h1")) == 'i') {
+        if (pBoard.getString((char)army(pBoard.getString(from)) + "f1").equals("") && pBoard.getString((char)army(pBoard.getString(from)) + "g1").equals("") && flag(pBoard.getString((char)army(pBoard.getString(from)) + "h1")) == 'i') {
           list.append((char)army(pBoard.getString(from)) + "g1");
-        } else if (pBoard.getString((char)army(pBoard.getString(from)) + "b1") == "" && pBoard.getString((char)army(pBoard.getString(from)) + "c1") == "" && pBoard.getString((char)army(pBoard.getString(from)) + "d1") == "" && flag(pBoard.getString((char)army(pBoard.getString(from)) + "a1")) == 'i') {
+        } else if (pBoard.getString((char)army(pBoard.getString(from)) + "b1").equals("") && pBoard.getString((char)army(pBoard.getString(from)) + "c1").equals("") && pBoard.getString((char)army(pBoard.getString(from)) + "d1").equals("") && flag(pBoard.getString((char)army(pBoard.getString(from)) + "a1")) == 'i') {
           list.append((char)army(pBoard.getString(from)) + "c1");
         }
       }
@@ -342,23 +345,23 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
   if (
     square == origin ||
     o != Opt.WALK_ONLY ||
-    (o == Opt.WALK_ONLY && pBoard.get(square) == "")
+    (o == Opt.WALK_ONLY && pBoard.get(square).equals(""))
     ) {
     if (
       square == origin ||
       o != Opt.CAPTURE_ONLY ||
-      (o == Opt.CAPTURE_ONLY && pBoard.get(square) != "")
+      (o == Opt.CAPTURE_ONLY && !pBoard.get(square).equals(""))
       ) {
       if (
         square == origin ||                                                                    // Quadrado inicial
         o == Opt.JUMP ||                                                                       // Ignora peças
-        (pBoard.get(square) == "" ||                                                           // Quadrado Vazio
-        (pBoard.get(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square))))    // Para antes da própria peça
+        (pBoard.get(square).equals("") ||                                                      // Quadrado Vazio
+        (!pBoard.get(square).equals("") && army(pBoard.getString(origin)) != army(pBoard.getString(square))))    // Para antes da própria peça
         )
       {
         switch(d) {
         case N:
-          if (level(square) == '1' && side(origin) != side(square) || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
+          if (level(square) == '1' && side(origin) != side(square) || (!pBoard.getString(square).equals("") && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else if (level(square) != '4') {
@@ -376,7 +379,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
           }
           break;
         case S:
-          if (level(square) == '1' && side(origin) == side(square) || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
+          if (level(square) == '1' && side(origin) == side(square) || (!pBoard.getString(square).equals("") && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -386,7 +389,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
             break;
           }
         case E:
-          if (letter(square) == 'h' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
+          if (letter(square) == 'h' || (!pBoard.getString(square).equals("") && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -395,7 +398,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
             break;
           }
         case W:
-          if (letter(square) == 'a' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
+          if (letter(square) == 'a' || (!pBoard.getString(square).equals("") && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -404,7 +407,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
             break;
           }
         case NE:
-          if (level(square) == '1' && side(origin) != side(square) || letter(square) == 'h' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
+          if (level(square) == '1' && side(origin) != side(square) || letter(square) == 'h' || (!pBoard.getString(square).equals("") && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else if (level(square) != '4') {
@@ -422,7 +425,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
           }
           break;
         case NW:
-          if (level(square) == '1' && side(origin) != side(square) || letter(square) == 'a' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
+          if (level(square) == '1' && side(origin) != side(square) || letter(square) == 'a' || (!pBoard.getString(square).equals("") && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else if (level(square) != '4') {
@@ -440,7 +443,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
           }
           break;
         case SE:
-          if (level(square) == '1' && side(origin) == side(square) || letter(square) == 'h' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
+          if (level(square) == '1' && side(origin) == side(square) || letter(square) == 'h' || (!pBoard.getString(square).equals("") && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -450,7 +453,7 @@ void recursive(StringList rec, String origin, String square, Dir d, Opt o) {
             break;
           }
         case SW:
-          if (level(square) == '1' && side(origin) == side(square) || letter(square) == 'a' || (pBoard.getString(square) != "" && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
+          if (level(square) == '1' && side(origin) == side(square) || letter(square) == 'a' || (!pBoard.getString(square).equals("") && army(pBoard.getString(origin)) != army(pBoard.getString(square)))) {
             rec.append(square);
             break;
           } else {
@@ -543,11 +546,11 @@ StringList invert(StringList list) {
 boolean xeque(char side) {
   for (Object o : pBoard.keys()) {
     String k = o.toString();
-    if (pBoard.get(k) != "" && army(pBoard.getString(k)) == side && piece(pBoard.getString(k)) == 'K') {
-    for (Object p : pBoard.keys()) {
-      String b = p.toString();
-        if (pBoard.get(b) != "" && validity(b, k)) {
-          println("XEQUE "+(char)side);
+    if (!pBoard.get(k).equals("") && army(pBoard.getString(k)) == side && piece(pBoard.getString(k)) == 'K') {
+      for (Object p : pBoard.keys()) {
+        String b = p.toString();
+        if (!pBoard.get(b).equals("") && validity(b, k)) {
+          Log("XEQUE "+(char)side);
           return true;
         }
       }
@@ -562,20 +565,26 @@ void mousePressed() {
   if (inPromotion) {
     if (PVector.dist(new PVector(375, 375), mouse) < 20) {
       pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "R");
+      lastPlay += "R";
     } else 
     if (PVector.dist(new PVector(425, 375), mouse) < 20) {
       pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "N");
+      lastPlay += "N";
     } else 
     if (PVector.dist(new PVector(375, 425), mouse) < 20) {
       pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "B");
+      lastPlay += "B";
     } else 
     if (PVector.dist(new PVector(425, 425), mouse) < 20) {
       pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "Q");
+      lastPlay += "Q";
     } 
     if (piece(pBoard.getString(selected)) != 'p') {
       inPromotion = false;
       selected = "";
       beginAnimation = frameCount;
+      Log(lastPlay);
+      Save();
     }
   } else {
     for (Object o : pBoard.keys()) {
@@ -584,19 +593,17 @@ void mousePressed() {
       if (PVector.dist(pos, mouse) < 20) {
         selected = b;
         if (validity(last, selected)) {
-          lastPlay = pBoard.getString(last).charAt(1) + last + " → " + ((pBoard.getString(selected) != "") ? pBoard.getString(selected).charAt(1): "") + selected;
-          if (piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selected) == 'g') { // Pq. Roque
+          lastPlay = pBoard.getString(last).charAt(1) + last + " → " + ((!pBoard.getString(selected).equals("")) ? pBoard.getString(selected).charAt(1): "") + selected;
+          if (army(pBoard.getString(last)) == player && piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selected) == 'g') { // Pq. Roque
             pBoard.setString((char)army(pBoard.getString(last)) + "f1", (char)army(pBoard.getString(last)) + "R");
             pBoard.setString((char)army(pBoard.getString(last)) + "h1", "");
             lastPlay = "O-O";
           }
-          if (piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selected) == 'c') { // Gd. Roque
+          if (army(pBoard.getString(last)) == player && piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selected) == 'c') { // Gd. Roque
             pBoard.setString((char)army(pBoard.getString(last)) + "d1", (char)army(pBoard.getString(last)) + "R");
             pBoard.setString((char)army(pBoard.getString(last)) + "a1", "");
             lastPlay = "O-O-O";
           }
-          rollUp += lastPlay + "/n";
-          println(lastPlay);
           if (piece(pBoard.getString(last)) == 'p' && level(last) == '2' && level(selected) == '4')
             pBoard.setString(last, pBoard.getString(last) + "e");
           if (flag(pBoard.getString(last)) == 'e' && level(last) == '4' || flag(pBoard.getString(last)) == 'i')
@@ -609,7 +616,10 @@ void mousePressed() {
             selected = "";
             beginAnimation = frameCount;
           }
-          Save();
+          if (!inPromotion) {
+            Log(lastPlay);
+            Save();
+          }
         }
         break;
       } else {
@@ -621,6 +631,13 @@ void mousePressed() {
     showCoords = !showCoords;
   }
 }
-  void Save(){
-    saveJSONObject(save, saveName + ".ncs");
-  }
+void Log(String log) {
+  save.setJSONArray("log", save.getJSONArray("log").append(log));
+  save.setJSONObject("pBoard", pBoard);
+  println(log);
+}
+
+void Save() {
+  saveJSONObject(save, saveName + ".ncs");
+  saveStrings(saveName + ".log", save.getJSONArray("log").getStringArray());
+}
