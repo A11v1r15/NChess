@@ -13,8 +13,8 @@ JSONObject save;
 String  saveName = "Test";
 
 void setup() {
-  args = new String[1];
-  args[0] = "C:/Users/User/Documents/Processing/NChess/Test.ncs";
+  /*args = new String[1];
+  args[0] = "C:/Users/User/Documents/Processing/NChess/Test.ncs";*/
   size(750, 750);
   colorMode(HSB);
   textAlign(CENTER);
