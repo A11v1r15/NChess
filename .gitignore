@@ -1,2 +1,5 @@
-Test.log
-Test.ncs
+*.log
+*.ncs
+
+/application.windows32/
+/application.windows64/

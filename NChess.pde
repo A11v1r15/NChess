@@ -1,20 +1,21 @@
-boolean showCoords = false; //<>//
+boolean showCoords = false; //<>// //<>//
 JSONObject pBoard;
 JSONObject sBoard;
 int n = 3;
 int player = 0;
 PShape[] gPiece;
 String selected = "";
-boolean fullPortal = false;
 int beginAnimation = 0;
 String lastPlay = "Set Up";
 boolean inPromotion = false;
 JSONObject save;
-String  saveName = "Test";
+JSONObject config;
+String  saveName;
+boolean notStarted = true;
+boolean playerRotate = false;
 
 void setup() {
-  /*args = new String[1];
-  args[0] = "C:/Users/User/Documents/Processing/NChess/Test.ncs";*/
+  StartPopUp popup = new StartPopUp(this);
   size(750, 750);
   colorMode(HSB);
   textAlign(CENTER);
@@ -32,18 +33,24 @@ void setup() {
   gPiece[3].disableStyle();
   gPiece[4].disableStyle();
   gPiece[5].disableStyle();
+  saveName = caesarCipherEncrypt(System.currentTimeMillis() + "");
+}
+
+void buildBoard() {
   sBoard = new JSONObject();
   if (args != null && args[0].endsWith(".ncs")) {
     save = loadJSONObject(args[0]);
     pBoard = save.getJSONObject("pBoard");
     n = save.getInt("players");
-    player = save.getInt("currentPlayer"); //<>//
+    player = save.getInt("currentPlayer");
+    saveName = save.getString("name");
   } else {
     pBoard = new JSONObject();
     save = new JSONObject();
     save.setJSONArray("log", new JSONArray());
     save.setInt("players", n);
     save.setInt("currentPlayer", player);
+    save.setString("name", saveName);
     for (int a = 1; a < n+1; a++) {
       for (int b = 0; b < 8; b++) {
         for (int c = 1; c < 4+1; c++) {
@@ -54,9 +61,9 @@ void setup() {
               pBoard.setString(a+""+(char)(b+'a')+""+c, a+"N");
             } else if (b == 2 || b == 5) {
               pBoard.setString(a+""+(char)(b+'a')+""+c, a+"B");
-            } else if ((a%2 == 0)? b == 4 : b == 3) {
+            } else if (b == 3) {                                  //((a%2 == 0)? b == 4 : b == 3) {
               pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Q");
-            } else if ((a%2 == 0)? b == 3 : b == 4) {
+            } else if (b == 4) {                                  //((a%2 == 0)? b == 3 : b == 4) {
               pBoard.setString(a+""+(char)(b+'a')+""+c, a+"Ki");
             }
           } else if (c == 2) {
@@ -72,6 +79,7 @@ void setup() {
 }
 
 void draw() {
+  if (notStarted) return;
   PVector mouse = new PVector(mouseX, mouseY);
   translate(width/2, height/2);
   background(127);
@@ -134,13 +142,24 @@ void draw() {
 
 void Board(int p, float s) {
   sBoard = new JSONObject();
-  rotate(PI/p /*+ PI/p * player * 2*/);
-  if (beginAnimation != 0) {
-    //rotate(PI/p/15*(frameCount - beginAnimation));
-    sBoard = new JSONObject();
-    if (beginAnimation + 3/*0*/ == frameCount) {
-      player++;
-      beginAnimation = 0;
+  if (playerRotate) {
+    rotate(PI/p + PI/p * player * 2);
+    if (beginAnimation != 0) {
+      rotate(PI/p/15*(frameCount - beginAnimation));
+      sBoard = new JSONObject();
+      if (beginAnimation + 30 == frameCount) {
+        player++;
+        beginAnimation = 0;
+      }
+    }
+  } else {
+    rotate(PI/p);
+    if (beginAnimation != 0) {
+      sBoard = new JSONObject();
+      if (beginAnimation + 3 == frameCount) {
+        player++;
+        beginAnimation = 0;
+      }
     }
   }
   for (int i = 0; i < p*2; i++) {
@@ -569,6 +588,7 @@ boolean xeque(char side) {
 }
 
 void mousePressed() {
+  if (notStarted) return;
   String last = selected;
   PVector mouse = new PVector(mouseX, mouseY);
   if (inPromotion) {
