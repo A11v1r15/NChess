@@ -62,7 +62,7 @@ public class NewGamePopUp implements ActionListener {
   PApplet chain;
   final JFrame parent = new JFrame("NChess - New Game");
   JLabel  playersPanel = new JLabel ();
-  JTextField players = new JTextField("3");
+  JTextField players = new JTextField(n+"");
   JLabel  emptyPanel = new JLabel ();
   JButton startGame = new JButton();
   JPanel panel = new JPanel();

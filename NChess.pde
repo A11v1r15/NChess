@@ -1,7 +1,7 @@
 boolean showCoords = false; //<>// //<>//
 JSONObject pBoard;
 JSONObject sBoard;
-int n = 3;
+int n = 2;
 int player = 0;
 PShape[] gPiece;
 String selected = "";
@@ -33,7 +33,7 @@ void setup() {
   gPiece[3].disableStyle();
   gPiece[4].disableStyle();
   gPiece[5].disableStyle();
-  saveName = caesarCipherEncrypt(System.currentTimeMillis() + "");
+  saveName = Long.toString(System.currentTimeMillis(), 36).toUpperCase();
 }
 
 void buildBoard() {
@@ -660,6 +660,7 @@ void mousePressed() {
     showCoords = !showCoords;
   }
 }
+
 void Log(String log) {
   save.setJSONArray("log", save.getJSONArray("log").append(log));
   save.setJSONObject("pBoard", pBoard);
