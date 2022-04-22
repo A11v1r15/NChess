@@ -1,10 +1,10 @@
-boolean showCoords = false; //<>// //<>//
+boolean showCoords = false;
 JSONObject pBoard;
 JSONObject sBoard;
 int n = 2;
 int player = 0;
 PShape[] gPiece;
-String selected = "";
+String selectedCoord = "";
 int beginAnimation = 0;
 String lastPlay = "Set Up";
 boolean inPromotion = false;
@@ -91,7 +91,7 @@ void draw() {
     String b = o.toString();
     if (!pBoard.get(b).equals("")) {
       PVector pos = new PVector(int(sBoard.getString(b).split("/")[0]), int(sBoard.getString(b).split("/")[1]));
-      fill((b == selected) ? 127 : color(map(side(pBoard.getString(b)) - '1', 0, n, 0, 255), 255, 255));
+      fill((b == selectedCoord) ? 127 : color(map(side(pBoard.getString(b)) - '1', 0, n, 0, 255), 255, 255));
       stroke((PVector.dist(pos, mouse) < 15) ? 0 : 127);
       if (piece(pBoard.getString(b)) == 'p' || piece(pBoard.getString(b)) == 'P') {
         shape(gPiece[0], pos.x, pos.y);
@@ -108,7 +108,7 @@ void draw() {
       }
     }
   }
-  if (pBoard.hasKey(selected) && !pBoard.get(selected).equals("")) {
+  if (pBoard.hasKey(selectedCoord) && !pBoard.get(selectedCoord).equals("")) {
     showHint();
   }
   if (showCoords) {
@@ -122,7 +122,7 @@ void draw() {
     stroke(0);
     fill(127);
     rect(350, 350, 100, 100);
-    fill(color(map(side(pBoard.getString(selected)) - '1', 0, n, 0, 255), 255, 255));
+    fill(color(map(side(pBoard.getString(selectedCoord)) - '1', 0, n, 0, 255), 255, 255));
     shape(gPiece[1], 375, 375);
     shape(gPiece[2], 425, 375);
     shape(gPiece[3], 375, 425);
@@ -210,7 +210,7 @@ void showHint() {
     String b = o.toString();
     PVector pos = new PVector(int(sBoard.getString(b).split("/")[0]), int(sBoard.getString(b).split("/")[1]));
     if (validity(b)) {
-      switch(piece(pBoard.getString(selected))) {
+      switch(piece(pBoard.getString(selectedCoord))) {
       case 'P':
       case 'p':
         shape(gPiece[0], pos.x, pos.y);
@@ -237,7 +237,7 @@ void showHint() {
 }
 
 boolean validity(String to) {
-  return validity(selected, to);
+  return validity(selectedCoord, to);
 }
 
 boolean validity(String from, String to) {
@@ -589,28 +589,28 @@ boolean xeque(char side) {
 
 void mousePressed() {
   if (notStarted) return;
-  String last = selected;
+  String last = selectedCoord;
   PVector mouse = new PVector(mouseX, mouseY);
   if (inPromotion) {
     if (PVector.dist(new PVector(375, 375), mouse) < 20) {
-      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "R");
+      pBoard.setString(selectedCoord, (char)army(pBoard.getString(selectedCoord)) + "R");
       lastPlay += "R";
     } else 
     if (PVector.dist(new PVector(425, 375), mouse) < 20) {
-      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "N");
+      pBoard.setString(selectedCoord, (char)army(pBoard.getString(selectedCoord)) + "N");
       lastPlay += "N";
     } else 
     if (PVector.dist(new PVector(375, 425), mouse) < 20) {
-      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "B");
+      pBoard.setString(selectedCoord, (char)army(pBoard.getString(selectedCoord)) + "B");
       lastPlay += "B";
     } else 
     if (PVector.dist(new PVector(425, 425), mouse) < 20) {
-      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "Q");
+      pBoard.setString(selectedCoord, (char)army(pBoard.getString(selectedCoord)) + "Q");
       lastPlay += "Q";
     } 
-    if (piece(pBoard.getString(selected)) != 'p') {
+    if (piece(pBoard.getString(selectedCoord)) != 'p') {
       inPromotion = false;
-      selected = "";
+      selectedCoord = "";
       beginAnimation = frameCount;
       Log(lastPlay);
       Save();
@@ -620,29 +620,30 @@ void mousePressed() {
       String b = o.toString();
       PVector pos = new PVector(int(sBoard.getString(b).split("/")[0]), int(sBoard.getString(b).split("/")[1]));
       if (PVector.dist(pos, mouse) < 20) {
-        selected = b;
-        if (validity(last, selected)) {
-          lastPlay = pBoard.getString(last).charAt(1) + last + " → " + ((!pBoard.getString(selected).equals("")) ? pBoard.getString(selected).charAt(1): "") + selected;
-          if (army(pBoard.getString(last)) == player && piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selected) == 'g') { // Pq. Roque
+        selectedCoord = b;
+        println(pBoard.getString(selectedCoord));
+        if (validity(last, selectedCoord)) {
+          lastPlay = pBoard.getString(last).charAt(1) + last + " → " + ((!pBoard.getString(selectedCoord).equals("")) ? pBoard.getString(selectedCoord).charAt(1): "") + selectedCoord;
+          if (army(pBoard.getString(last)) == player && piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selectedCoord) == 'g') { // Pq. Roque
             pBoard.setString((char)army(pBoard.getString(last)) + "f1", (char)army(pBoard.getString(last)) + "R");
             pBoard.setString((char)army(pBoard.getString(last)) + "h1", "");
             lastPlay = "O-O";
           }
-          if (army(pBoard.getString(last)) == player && piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selected) == 'c') { // Gd. Roque
+          if (army(pBoard.getString(last)) == player && piece(pBoard.getString(last)) == 'K' && flag(pBoard.getString(last)) == 'i' && letter(selectedCoord) == 'c') { // Gd. Roque
             pBoard.setString((char)army(pBoard.getString(last)) + "d1", (char)army(pBoard.getString(last)) + "R");
             pBoard.setString((char)army(pBoard.getString(last)) + "a1", "");
             lastPlay = "O-O-O";
           }
-          if (piece(pBoard.getString(last)) == 'p' && level(last) == '2' && level(selected) == '4')
+          if (piece(pBoard.getString(last)) == 'p' && level(last) == '2' && level(selectedCoord) == '4')
             pBoard.setString(last, pBoard.getString(last) + "e");
           if (flag(pBoard.getString(last)) == 'e' && level(last) == '4' || flag(pBoard.getString(last)) == 'i')
             pBoard.setString(last, pBoard.getString(last).substring(0, 2));
-          pBoard.setString(selected, pBoard.getString(last));
+          pBoard.setString(selectedCoord, pBoard.getString(last));
           pBoard.setString(last, "");
-          if (piece(pBoard.getString(selected)) == 'p' && level(selected) == '1') {
+          if (piece(pBoard.getString(selectedCoord)) == 'p' && level(selectedCoord) == '1') {
             inPromotion = true;
           } else {
-            selected = "";
+            selectedCoord = "";
             beginAnimation = frameCount;
           }
           if (!inPromotion) {
@@ -652,7 +653,7 @@ void mousePressed() {
         }
         break;
       } else {
-        selected = "";
+        selectedCoord = "";
       }
     }
   }
