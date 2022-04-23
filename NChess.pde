@@ -150,6 +150,7 @@ void Board(int p, float s) {
       sBoard = new JSONObject();
       if (beginAnimation + 30 == frameCount) {
         player++;
+        save.setInt("currentPlayer", player);
         beginAnimation = 0;
       }
     }
@@ -159,6 +160,7 @@ void Board(int p, float s) {
       sBoard = new JSONObject();
       if (beginAnimation + 3 == frameCount) {
         player++;
+        save.setInt("currentPlayer", player);
         beginAnimation = 0;
       }
     }

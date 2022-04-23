@@ -9,6 +9,7 @@ public class StartPopUp implements ActionListener {
   final JFrame parent = new JFrame("NChess");
   JButton loadGame = new JButton();
   JButton newGame = new JButton();
+  JButton loadNet = new JButton();
   JPanel panel = new JPanel();
   PApplet chain;
 
@@ -18,9 +19,12 @@ public class StartPopUp implements ActionListener {
     loadGame.addActionListener(this);
     newGame.setText("New Game");
     newGame.addActionListener(this);
+    loadNet.setText("Load From Net");
+    loadNet.addActionListener(this);
     panel.setLayout(new FlowLayout());
     panel.add(newGame);
     panel.add(loadGame);
+    panel.add(loadNet);
     parent.add(panel);
     parent.pack();
     parent.setSize((int)(parent.getWidth() * 1.3), (int)(parent.getHeight()*1.1));
@@ -54,6 +58,10 @@ public class StartPopUp implements ActionListener {
     } else if (source == newGame) {
       parent.setVisible(false);
       NewGamePopUp popup = new NewGamePopUp(chain);
+    } else if (source == loadNet) {
+      parent.setVisible(false);
+      getFromNet("L2B3JA8D");
+      notStarted = false;
     }
   }
 }
