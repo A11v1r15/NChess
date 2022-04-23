@@ -1,4 +1,4 @@
-boolean showCoords = false; //<>// //<>//
+boolean showCoords = false; //<>//
 JSONObject pBoard;
 JSONObject sBoard;
 int n = 2;
@@ -16,7 +16,7 @@ boolean playerRotate = false;
 
 void setup() {
   StartPopUp popup = new StartPopUp(this);
-  size(750, 750);
+  size(600, 600);
   colorMode(HSB);
   textAlign(CENTER);
   shapeMode(CENTER);
@@ -85,6 +85,7 @@ void draw() {
   background(127);
   Board(n, width/4);
   resetMatrix();
+  text(saveName, width/2, 20);
   fill(color(map(player%n, 0, n, 0, 255), 255, 255));
   rect(0, 0, 50, 50);
   for (Object o : pBoard.keys()) {
@@ -121,12 +122,12 @@ void draw() {
   if (inPromotion) {
     stroke(0);
     fill(127);
-    rect(350, 350, 100, 100);
+    rect(width/2-50, height/2-50, 100, 100);
     fill(color(map(side(pBoard.getString(selected)) - '1', 0, n, 0, 255), 255, 255));
-    shape(gPiece[1], 375, 375);
-    shape(gPiece[2], 425, 375);
-    shape(gPiece[3], 375, 425);
-    shape(gPiece[4], 425, 425);
+    shape(gPiece[1], width/2-25, height/2-25);
+    shape(gPiece[2], width/2+25, height/2-25);
+    shape(gPiece[3], width/2-25, height/2+25);
+    shape(gPiece[4], width/2+25, height/2+25);
   }
   if (xeque((char)(player%n + '1'))) {
     fill(0);
@@ -592,19 +593,19 @@ void mousePressed() {
   String last = selected;
   PVector mouse = new PVector(mouseX, mouseY);
   if (inPromotion) {
-    if (PVector.dist(new PVector(375, 375), mouse) < 20) {
+    if (PVector.dist(new PVector(width/2-25, height/2-25), mouse) < 20) {
       pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "R");
       lastPlay += "R";
     } else 
-    if (PVector.dist(new PVector(425, 375), mouse) < 20) {
+    if (PVector.dist(new PVector(width/2+25, height/2-25), mouse) < 20) {
       pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "N");
       lastPlay += "N";
     } else 
-    if (PVector.dist(new PVector(375, 425), mouse) < 20) {
+    if (PVector.dist(new PVector(width/2-25, height/2+25), mouse) < 20) {
       pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "B");
       lastPlay += "B";
     } else 
-    if (PVector.dist(new PVector(425, 425), mouse) < 20) {
+    if (PVector.dist(new PVector(width/2+25, height/2+25), mouse) < 20) {
       pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "Q");
       lastPlay += "Q";
     } 
