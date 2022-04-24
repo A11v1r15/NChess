@@ -37,14 +37,16 @@ void setup() {
 }
 
 void buildBoard() {
+  buildMenuBar();
   sBoard = new JSONObject();
-  if (args != null && args[0].endsWith(".ncs")) {
+  if (args != null && args[0].endsWith(".ncs")) {    //Loaded Game
     save = loadJSONObject(args[0]);
     pBoard = save.getJSONObject("pBoard");
     n = save.getInt("players");
     player = save.getInt("currentPlayer");
     saveName = save.getString("name");
-  } else {
+  } else {                                          //New Game
+    player = 0;
     pBoard = new JSONObject();
     save = new JSONObject();
     save.setJSONArray("log", new JSONArray());
@@ -76,16 +78,18 @@ void buildBoard() {
     }
     save.setJSONObject("pBoard", pBoard);
   }
+
+  ((processing.awt.PSurfaceAWT.SmoothCanvas)this.getSurface().getNative()).getFrame().setTitle("NChess - " + saveName);
 }
 
 void draw() {
   if (notStarted) return;
+  println(player);
   PVector mouse = new PVector(mouseX, mouseY);
   translate(width/2, height/2);
   background(127);
   Board(n, width/4);
   resetMatrix();
-  text(saveName, width/2, 20);
   fill(color(map(player%n, 0, n, 0, 255), 255, 255));
   rect(0, 0, 50, 50);
   for (Object o : pBoard.keys()) {
@@ -150,7 +154,6 @@ void Board(int p, float s) {
       sBoard = new JSONObject();
       if (beginAnimation + 30 == frameCount) {
         player++;
-        save.setInt("currentPlayer", player);
         beginAnimation = 0;
       }
     }
@@ -160,7 +163,6 @@ void Board(int p, float s) {
       sBoard = new JSONObject();
       if (beginAnimation + 3 == frameCount) {
         player++;
-        save.setInt("currentPlayer", player);
         beginAnimation = 0;
       }
     }
@@ -659,14 +661,12 @@ void mousePressed() {
       }
     }
   }
-  if (mouseX > width - 50 && mouseY > height - 50) {
-    showCoords = !showCoords;
-  }
 }
 
 void Log(String log) {
   save.setJSONArray("log", save.getJSONArray("log").append(log));
   save.setJSONObject("pBoard", pBoard);
+  save.setInt("currentPlayer", player+1);
   println(log);
 }
 
