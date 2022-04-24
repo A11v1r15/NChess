@@ -41,7 +41,7 @@ public void post() {
   }
 }
 
-public void getFromNet(String name) {
+public void getFromNet(String name) { //test: L2B3JA8D
   try {
     URL url = new URL("https://a11v1r15-nchess.000webhostapp.com/api.php/records/matches?filter=name,eq,"+name);
     URLConnection yc = url.openConnection();
@@ -50,10 +50,10 @@ public void getFromNet(String name) {
     inputLine = in.readLine();
     in.close();
     JSONObject records = parseJSONObject(inputLine);
-    save = parseJSONObject(records.getJSONArray("records").getJSONObject(0).getString("board"));
-    saveJSONObject(save, save.getString("name")+".ncs");
+    save = parseJSONObject(records.getJSONArray("records").getJSONObject(0).getString("board").replace("â\u2020\u2019", "→"));
+    saveJSONObject(save, "Saves/@" + save.getString("name")+".ncs");
     args = new String[1];
-    args[0] = save.getString("name")+".ncs";
+    args[0] = "Saves/@" + save.getString("name")+".ncs";
     buildBoard();
   }
   catch(MalformedURLException e) {

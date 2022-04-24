@@ -60,8 +60,7 @@ public class StartPopUp implements ActionListener {
       NewGamePopUp popup = new NewGamePopUp(chain);
     } else if (source == loadNet) {
       parent.setVisible(false);
-      getFromNet("L2B3JA8D");
-      notStarted = false;
+      LoadNetGamePopUp popup = new LoadNetGamePopUp(chain);
     }
   }
 }
@@ -105,9 +104,84 @@ public class NewGamePopUp implements ActionListener {
     if (source == startGame) {
       n = max(2, parseInt(players.getText()));
       parent.setVisible(false);
+      netPlay = false;
       buildBoard();
       notStarted = false;
     }
+  }
+}
+
+public class LoadNetGamePopUp implements ActionListener {
+  PApplet chain;
+  final JFrame parent = new JFrame("NChess - Load Game from Net");
+  JLabel  playersPanel = new JLabel ();
+  JTextField players = new JTextField("");
+  JLabel  emptyPanel = new JLabel ();
+  JButton startGame = new JButton();
+  JPanel panel = new JPanel();
+
+  public LoadNetGamePopUp(PApplet app) {
+    chain = app;
+    startGame.setText("Load Game");
+    startGame.addActionListener(this);
+    playersPanel.setText("Save Name:");
+    panel.setLayout(new GridLayout(4, 1));
+    panel.add(playersPanel);
+    panel.add(players);
+    panel.add(emptyPanel);
+    panel.add(startGame);
+    parent.add(panel);
+    parent.pack();
+    parent.setSize((int)(parent.getWidth() * 1.3), (int)(parent.getHeight()*1.1));
+    parent.setLocation((displayWidth - parent.getWidth())/2, (displayHeight - parent.getHeight())/2);
+    parent.setVisible(true);
+
+    parent.addWindowListener(new java.awt.event.WindowAdapter() {
+      @Override
+        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+        StartPopUp popup = new StartPopUp(chain);
+      }
+    }
+    );
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource();
+    if (source == startGame) {
+      getFromNet(players.getText());
+      parent.setVisible(false);
+      netPlay = true;
+      buildBoard();
+      notStarted = false;
+    }
+  }
+}
+public class LogPopUp {
+  PApplet chain;
+  final JFrame parent = new JFrame("Log - " + (netPlay?"@":"") + saveName);
+  JLabel playersPanel = new JLabel();
+
+  public LogPopUp(PApplet app) {
+    chain = app;
+    JFrame frame = (JFrame) ((processing.awt.PSurfaceAWT.SmoothCanvas)app.getSurface().getNative()).getFrame();
+    update();
+    playersPanel.setVerticalAlignment(JLabel.NORTH);
+    parent.add(playersPanel);
+    parent.pack();
+    parent.setSize(100, height);
+    parent.setLocation(frame.getX()+frame.getWidth(), frame.getY());
+    parent.setVisible(true);
+  }
+
+  public void update() {
+    String logText = "<html>";
+    for (int i = 0; i < save.getJSONArray("log").getStringArray().length; i++) {
+      logText += "<span style='color:#" + hex(color(map(i%n, 0, n, 0, 255), 255, 255)).substring(2) + "'>";
+      logText += save.getJSONArray("log").getString(i);
+      logText += "</span><br>";
+    }
+    logText += "</html>";
+    playersPanel.setText(logText);
   }
 }
 
@@ -118,10 +192,11 @@ public class Menu_bar extends JFrame implements ActionListener {
   JMenuItem new_file = new JMenuItem("New Game");
   JMenuItem old_file = new JMenuItem("Load Game");
   JMenuItem action_exit = new JMenuItem("Exit");
-  
+
   JMenu options_menu = new JMenu("Options");
   JMenuItem animated = new JMenuItem((playerRotate?"☑":"☐")+" Rotate");
   JMenuItem drawCoords = new JMenuItem((showCoords?"☑":"☐")+" Show Coords");
+  JMenuItem logView = new JMenuItem("View Log");
 
   JPanel panel;
 
@@ -143,12 +218,15 @@ public class Menu_bar extends JFrame implements ActionListener {
     import_menu.addSeparator();
     action_exit.addActionListener(this);
     import_menu.add(action_exit);
-    
+
     menu_bar.add(options_menu);
     animated.addActionListener(this);
     options_menu.add(animated);
     drawCoords.addActionListener(this);
     options_menu.add(drawCoords);
+    options_menu.addSeparator();
+    logView.addActionListener(this);
+    options_menu.add(logView);
     frame.setVisible(true);
   }
 
@@ -177,8 +255,10 @@ public class Menu_bar extends JFrame implements ActionListener {
       playerRotate = !playerRotate;
       animated.setText((playerRotate?"☑":"☐")+" Rotate");
     } else if (source == drawCoords) {
-       showCoords = !showCoords;
+      showCoords = !showCoords;
       drawCoords.setText((showCoords?"☑":"☐")+" Show Coords");
+    } else if (source == logView) {
+      logPopUp = new LogPopUp(chain);
     }
   }
 }
