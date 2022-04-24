@@ -26,9 +26,8 @@ public void post(boolean firstTime) {
     http.setFixedLengthStreamingMode(outLength);
     http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
     http.connect();
-    try(OutputStream os = http.getOutputStream()) {
-      os.write(out);
-    }
+    OutputStream os = http.getOutputStream();
+    os.write(out);
     println(http.getResponseMessage());
     println(http.getResponseCode());
   }
@@ -42,7 +41,7 @@ public void post(boolean firstTime) {
   }
 }
 
-public void getFromNet(String name) { //test: L2B3JA8D
+public void getFromWeb(String name) { //test: L2B3JA8D
   try {
     URL url = new URL("https://a11v1r15-nchess.000webhostapp.com/api.php/records/matches?filter=name,eq,"+name);
     URLConnection yc = url.openConnection();

@@ -13,7 +13,7 @@ JSONObject config;
 String  saveName;
 boolean notStarted = true;
 boolean playerRotate = false;
-boolean netPlay = false;
+boolean webPlay = false;
 LogPopUp logPopUp;
 
 void setup() {
@@ -80,7 +80,7 @@ void buildBoard() {
     }
     save.setJSONObject("pBoard", pBoard);
   }
-  ((processing.awt.PSurfaceAWT.SmoothCanvas)this.getSurface().getNative()).getFrame().setTitle("NChess - " + (netPlay?"@":"") + saveName);
+  ((processing.awt.PSurfaceAWT.SmoothCanvas)this.getSurface().getNative()).getFrame().setTitle("NChess - " + (webPlay?"@":"") + saveName);
 }
 
 void draw() {
@@ -88,7 +88,7 @@ void draw() {
   PVector mouse = new PVector(mouseX, mouseY);
   translate(width/2, height/2);
   background(127);
-  Board(n, width/4);
+  Board(n, width/3.8);
   resetMatrix();
   fill(color(map(player%n, 0, n, 0, 255), 255, 255));
   rect(0, 0, 50, 50);
@@ -669,7 +669,7 @@ void Log(String log) {
 }
 
 void Save() {
-  if(netPlay) post(false);
-  saveJSONObject(save, "Saves/" + (netPlay?"@":"") + saveName + ".ncs");
-  saveStrings("Logs/" + (netPlay?"@":"") + saveName + ".log", save.getJSONArray("log").getStringArray());
+  if(webPlay) post(false);
+  saveJSONObject(save, "Saves/" + (webPlay?"@":"") + saveName + ".ncs");
+  saveStrings("Logs/" + (webPlay?"@":"") + saveName + ".log", save.getJSONArray("log").getStringArray());
 }

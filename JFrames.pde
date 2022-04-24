@@ -11,25 +11,29 @@ public class StartPopUp implements ActionListener {
   final JFrame parent = new JFrame("NChess");
   JButton loadGame = new JButton();
   JButton newGame = new JButton();
-  JButton loadNet = new JButton();
+  JButton loadWeb = new JButton();
+  JButton newWeb = new JButton();
   JPanel panel = new JPanel();
   PApplet chain;
 
   public StartPopUp(PApplet app) {
     chain = app;
-    loadGame.setText("Load Game");
-    loadGame.addActionListener(this);
     newGame.setText("New Game");
     newGame.addActionListener(this);
-    loadNet.setText("Load From Web");
-    loadNet.addActionListener(this);
+    loadGame.setText("Load Game");
+    loadGame.addActionListener(this);
+    newWeb.setText("Start Web Game");
+    newWeb.addActionListener(this);
+    loadWeb.setText("Join Web Game");
+    loadWeb.addActionListener(this);
     panel.setLayout(new FlowLayout());
     panel.add(newGame);
     panel.add(loadGame);
-    panel.add(loadNet);
+    panel.add(newWeb);
+    panel.add(loadWeb);
     parent.add(panel);
     parent.pack();
-    parent.setSize((int)(parent.getWidth() * 1.3), (int)(parent.getHeight()*1.1));
+    parent.setSize((int)(parent.getWidth() * 1.1), (int)(parent.getHeight()*1.1));
     parent.setLocation((displayWidth - parent.getWidth())/2, (displayHeight - parent.getHeight())/2);
     parent.setVisible(true);
 
@@ -54,16 +58,19 @@ public class StartPopUp implements ActionListener {
         args = new String[1];
         args[0] = chooser.getSelectedFile().getPath();
         buildBoard();
-        netPlay = false;
+        webPlay = false;
         notStarted = false;
       }
       println("Selected new file");
     } else if (source == newGame) {
       parent.setVisible(false);
       NewGamePopUp popup = new NewGamePopUp(chain);
-    } else if (source == loadNet) {
+    } else if (source == newWeb) {
       parent.setVisible(false);
-      LoadNetGamePopUp popup = new LoadNetGamePopUp(chain);
+      NewWebGamePopUp popup = new NewWebGamePopUp(chain);
+    } else if (source == loadWeb) {
+      parent.setVisible(false);
+      LoadWebGamePopUp popup = new LoadWebGamePopUp(chain);
     }
   }
 }
@@ -108,14 +115,14 @@ public class NewGamePopUp implements ActionListener {
       args = null;
       n = max(2, parseInt(players.getText()));
       parent.setVisible(false);
-      netPlay = false;
+      webPlay = false;
       buildBoard();
       notStarted = false;
     }
   }
 }
 
-public class NewNetGamePopUp implements ActionListener {
+public class NewWebGamePopUp implements ActionListener {
   PApplet chain;
   final JFrame parent = new JFrame("NChess - New Web Game");
   JLabel  playersPanel = new JLabel ();
@@ -124,7 +131,7 @@ public class NewNetGamePopUp implements ActionListener {
   JButton startGame = new JButton();
   JPanel panel = new JPanel();
 
-  public NewNetGamePopUp(PApplet app) {
+  public NewWebGamePopUp(PApplet app) {
     chain = app;
     startGame.setText("Start Web Game");
     startGame.addActionListener(this);
@@ -152,16 +159,17 @@ public class NewNetGamePopUp implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
     if (source == startGame) {
+      args = null;
       n = max(2, parseInt(players.getText()));
       parent.setVisible(false);
-      netPlay = false;
+      webPlay = true;
       buildBoard();
       notStarted = false;
     }
   }
 }
 
-public class LoadNetGamePopUp implements ActionListener {
+public class LoadWebGamePopUp implements ActionListener {
   PApplet chain;
   final JFrame parent = new JFrame("NChess - Load Game from Web");
   JLabel  playersPanel = new JLabel ();
@@ -170,7 +178,7 @@ public class LoadNetGamePopUp implements ActionListener {
   JButton startGame = new JButton();
   JPanel panel = new JPanel();
 
-  public LoadNetGamePopUp(PApplet app) {
+  public LoadWebGamePopUp(PApplet app) {
     chain = app;
     startGame.setText("Load Game");
     startGame.addActionListener(this);
@@ -198,9 +206,9 @@ public class LoadNetGamePopUp implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
     if (source == startGame) {
-      getFromNet(players.getText());
+      getFromWeb(players.getText());
       parent.setVisible(false);
-      netPlay = true;
+      webPlay = true;
       buildBoard();
       notStarted = false;
     }
@@ -209,7 +217,7 @@ public class LoadNetGamePopUp implements ActionListener {
 
 public class LogPopUp {
   PApplet chain;
-  final JFrame parent = new JFrame("Log - " + (netPlay?"@":"") + saveName);
+  final JFrame parent = new JFrame("Log - " + (webPlay?"@":"") + saveName);
   JLabel playersPanel = new JLabel();
 
   public LogPopUp(PApplet app) {
@@ -219,7 +227,7 @@ public class LogPopUp {
     playersPanel.setVerticalAlignment(JLabel.NORTH);
     parent.add(playersPanel);
     parent.pack();
-    parent.setSize(100, height);
+    parent.setSize(100, frame.getHeight());
     parent.setLocation(frame.getX()+frame.getWidth(), frame.getY());
     parent.setVisible(true);
   }

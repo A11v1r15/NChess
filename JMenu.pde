@@ -5,9 +5,9 @@ public class Menu_bar extends JFrame implements ActionListener {
   JMenuItem copy_save = new JMenuItem("Copy Save Name");
   JMenuItem new_game = new JMenuItem("New Game");
   JMenuItem old_game = new JMenuItem("Load Game");
-  JMenuItem web_game = new JMenuItem("Web Game");
-  JMenuItem new_web_game = new JMenuItem("New Web Game");
-  JMenuItem old_web_game = new JMenuItem("Load Web Game");
+  JMenu web_game = new JMenu("Web Game");
+  JMenuItem new_web_game = new JMenuItem("Start Web Game");
+  JMenuItem old_web_game = new JMenuItem("Join Web Game");
   JMenuItem action_exit = new JMenuItem("Exit");
 
   JMenu options_menu = new JMenu("Options");
@@ -32,8 +32,8 @@ public class Menu_bar extends JFrame implements ActionListener {
     new_game.setMnemonic('N');
     old_game.setMnemonic('L');
     web_game.setMnemonic('W');
-    new_web_game.setMnemonic('N');
-    old_web_game.setMnemonic('L');
+    new_web_game.setMnemonic('S');
+    old_web_game.setMnemonic('J');
     action_exit.setMnemonic('E');
     options_menu.setMnemonic('O');
     animated.setMnemonic('R');
@@ -47,6 +47,11 @@ public class Menu_bar extends JFrame implements ActionListener {
     import_menu.add(new_game);
     old_game.addActionListener(this);
     import_menu.add(old_game);
+    new_web_game.addActionListener(this);
+    web_game.add(new_web_game);
+    old_web_game.addActionListener(this);
+    web_game.add(old_web_game);
+    import_menu.add(web_game);
     import_menu.addSeparator();
     action_exit.addActionListener(this);
     import_menu.add(action_exit);
@@ -85,6 +90,12 @@ public class Menu_bar extends JFrame implements ActionListener {
         buildBoard();
         notStarted = false;
       }
+    } else if (source == new_web_game) {
+      notStarted = true;
+      NewWebGamePopUp popup = new NewWebGamePopUp(chain);
+    } else if (source == old_web_game) {
+      notStarted = true;
+      LoadWebGamePopUp popup = new LoadWebGamePopUp(chain);
     } else if (source == action_exit) {
       exit();
     } else if (source == animated) {
