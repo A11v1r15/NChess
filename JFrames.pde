@@ -33,7 +33,8 @@ public class StartPopUp implements ActionListener {
     panel.add(loadWeb);
     parent.add(panel);
     parent.pack();
-    parent.setSize((int)(parent.getWidth() * 1.1), (int)(parent.getHeight()*1.1));
+    parent.setSize((int)(parent.getWidth() * 0.6), (int)(parent.getHeight()*1.6));
+    parent.setResizable(false);
     parent.setLocation((displayWidth - parent.getWidth())/2, (displayHeight - parent.getHeight())/2);
     parent.setVisible(true);
 
@@ -79,8 +80,7 @@ public class NewGamePopUp implements ActionListener {
   PApplet chain;
   final JFrame parent = new JFrame("NChess - New Game");
   JLabel  playersPanel = new JLabel ();
-  JTextField players = new JTextField(n+"");
-  JLabel  emptyPanel = new JLabel ();
+  JTextField players = new JTextField(n+"", 3);
   JButton startGame = new JButton();
   JPanel panel = new JPanel();
 
@@ -89,14 +89,14 @@ public class NewGamePopUp implements ActionListener {
     startGame.setText("Start Game");
     startGame.addActionListener(this);
     playersPanel.setText("Players:");
-    panel.setLayout(new GridLayout(4, 1));
+    panel.setLayout(new FlowLayout());
     panel.add(playersPanel);
     panel.add(players);
-    panel.add(emptyPanel);
     panel.add(startGame);
     parent.add(panel);
     parent.pack();
-    parent.setSize((int)(parent.getWidth() * 1.3), (int)(parent.getHeight()*1.1));
+    parent.setSize(150, 120);
+    parent.setResizable(false);
     parent.setLocation((displayWidth - parent.getWidth())/2, (displayHeight - parent.getHeight())/2);
     parent.setVisible(true);
 
@@ -126,8 +126,7 @@ public class NewWebGamePopUp implements ActionListener {
   PApplet chain;
   final JFrame parent = new JFrame("NChess - New Web Game");
   JLabel  playersPanel = new JLabel ();
-  JTextField players = new JTextField(n+"");
-  JLabel  emptyPanel = new JLabel ();
+  JTextField players = new JTextField(n+"", 3);
   JButton startGame = new JButton();
   JPanel panel = new JPanel();
 
@@ -136,14 +135,14 @@ public class NewWebGamePopUp implements ActionListener {
     startGame.setText("Start Web Game");
     startGame.addActionListener(this);
     playersPanel.setText("Players:");
-    panel.setLayout(new GridLayout(4, 1));
+    panel.setLayout(new FlowLayout());
     panel.add(playersPanel);
     panel.add(players);
-    panel.add(emptyPanel);
     panel.add(startGame);
     parent.add(panel);
     parent.pack();
-    parent.setSize((int)(parent.getWidth() * 1.3), (int)(parent.getHeight()*1.1));
+    parent.setSize(170, 120);
+    parent.setResizable(false);
     parent.setLocation((displayWidth - parent.getWidth())/2, (displayHeight - parent.getHeight())/2);
     parent.setVisible(true);
 
@@ -173,7 +172,7 @@ public class LoadWebGamePopUp implements ActionListener {
   PApplet chain;
   final JFrame parent = new JFrame("NChess - Load Game from Web");
   JLabel  playersPanel = new JLabel ();
-  JTextField players = new JTextField("");
+  JTextField players = new JTextField(8);
   JLabel  emptyPanel = new JLabel ();
   JButton startGame = new JButton();
   JPanel panel = new JPanel();
@@ -183,14 +182,14 @@ public class LoadWebGamePopUp implements ActionListener {
     startGame.setText("Load Game");
     startGame.addActionListener(this);
     playersPanel.setText("Save Name:");
-    panel.setLayout(new GridLayout(4, 1));
+    panel.setLayout(new FlowLayout());
     panel.add(playersPanel);
     panel.add(players);
     panel.add(emptyPanel);
     panel.add(startGame);
     parent.add(panel);
     parent.pack();
-    parent.setSize((int)(parent.getWidth() * 1.3), (int)(parent.getHeight()*1.1));
+    parent.setSize(220, 120);
     parent.setLocation((displayWidth - parent.getWidth())/2, (displayHeight - parent.getHeight())/2);
     parent.setVisible(true);
 
