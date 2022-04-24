@@ -107,18 +107,31 @@ public class NewGamePopUp implements ActionListener {
       }
     }
     );
+    players.addActionListener( new AbstractAction()
+    {
+      @Override
+        public void actionPerformed(ActionEvent e)
+      {
+        go();
+      }
+    }
+    );
   }
 
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
     if (source == startGame) {
-      args = null;
-      n = max(2, parseInt(players.getText()));
-      parent.setVisible(false);
-      webPlay = false;
-      buildBoard();
-      notStarted = false;
+      go();
     }
+  }
+
+  private void go() {
+    args = null;
+    n = max(2, parseInt(players.getText()));
+    parent.setVisible(false);
+    webPlay = false;
+    buildBoard();
+    notStarted = false;
   }
 }
 
@@ -153,18 +166,31 @@ public class NewWebGamePopUp implements ActionListener {
       }
     }
     );
+    players.addActionListener( new AbstractAction()
+    {
+      @Override
+        public void actionPerformed(ActionEvent e)
+      {
+        go();
+      }
+    }
+    );
   }
 
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
     if (source == startGame) {
-      args = null;
-      n = max(2, parseInt(players.getText()));
-      parent.setVisible(false);
-      webPlay = true;
-      buildBoard();
-      notStarted = false;
+      go();
     }
+  }
+
+  private void go() {
+    args = null;
+    n = max(2, parseInt(players.getText()));
+    parent.setVisible(false);
+    webPlay = true;
+    buildBoard();
+    notStarted = false;
   }
 }
 
@@ -200,17 +226,30 @@ public class LoadWebGamePopUp implements ActionListener {
       }
     }
     );
+    players.addActionListener( new AbstractAction()
+    {
+      @Override
+        public void actionPerformed(ActionEvent e)
+      {
+        go();
+      }
+    }
+    );
   }
 
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
     if (source == startGame) {
-      getFromWeb(players.getText());
-      parent.setVisible(false);
-      webPlay = true;
-      buildBoard();
-      notStarted = false;
+      go();
     }
+  }
+
+  private void go() {
+    getFromWeb(players.getText());
+    parent.setVisible(false);
+    webPlay = true;
+    buildBoard();
+    notStarted = false;
   }
 }
 
