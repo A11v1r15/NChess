@@ -3,6 +3,8 @@ import java.awt.event.*;
 import javax.swing.filechooser.*;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.datatransfer.*;
+import java.awt.Toolkit;
 
 public class StartPopUp implements ActionListener {
 
@@ -52,6 +54,7 @@ public class StartPopUp implements ActionListener {
         args = new String[1];
         args[0] = chooser.getSelectedFile().getPath();
         buildBoard();
+        netPlay = false;
         notStarted = false;
       }
       println("Selected new file");
@@ -156,6 +159,7 @@ public class LoadNetGamePopUp implements ActionListener {
     }
   }
 }
+
 public class LogPopUp {
   PApplet chain;
   final JFrame parent = new JFrame("Log - " + (netPlay?"@":"") + saveName);
@@ -174,13 +178,13 @@ public class LogPopUp {
   }
 
   public void update() {
-    String logText = "<html>";
+    String logText = "<html><div style='background-color: #333; height:100%;'>";
     for (int i = 0; i < save.getJSONArray("log").getStringArray().length; i++) {
       logText += "<span style='color:#" + hex(color(map(i%n, 0, n, 0, 255), 255, 255)).substring(2) + "'>";
       logText += save.getJSONArray("log").getString(i);
       logText += "</span><br>";
     }
-    logText += "</html>";
+    logText += "</div></html>";
     playersPanel.setText(logText);
   }
 }
@@ -189,6 +193,7 @@ public class Menu_bar extends JFrame implements ActionListener {
   PApplet chain;
   JFrame frame;
   JMenu import_menu = new JMenu("File");
+  JMenuItem copy_save = new JMenuItem("Copy Save Name");
   JMenuItem new_file = new JMenuItem("New Game");
   JMenuItem old_file = new JMenuItem("Load Game");
   JMenuItem action_exit = new JMenuItem("Exit");
@@ -210,7 +215,19 @@ public class Menu_bar extends JFrame implements ActionListener {
     JMenuBar menu_bar = new JMenuBar();
     frame.setJMenuBar(menu_bar);
 
+    import_menu.setMnemonic('F');
+    copy_save.setMnemonic('C');
+    new_file.setMnemonic('N');
+    old_file.setMnemonic('L');
+    action_exit.setMnemonic('E');
+    options_menu.setMnemonic('O');
+    animated.setMnemonic('R');
+    drawCoords.setMnemonic('C');
+    logView.setMnemonic('L');
+
     menu_bar.add(import_menu);
+    copy_save.addActionListener(this);
+    import_menu.add(copy_save);
     new_file.addActionListener(this);
     import_menu.add(new_file);
     old_file.addActionListener(this);
@@ -234,7 +251,11 @@ public class Menu_bar extends JFrame implements ActionListener {
     String str = e.getActionCommand(); 
 
     Object source = e.getSource();
-    if (source == new_file) {
+    if (source == copy_save) {
+      StringSelection stringSelection = new StringSelection(saveName);
+      Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+      clpbrd.setContents(stringSelection, null);
+    } else if (source == new_file) {
       notStarted = true;
       NewGamePopUp popup = new NewGamePopUp(chain);
     } else if (source == old_file) {

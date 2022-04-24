@@ -669,6 +669,7 @@ void Log(String log) {
 }
 
 void Save() {
-  saveJSONObject(save, "Saves/" + saveName + ".ncs");
-  saveStrings("Logs/" + saveName + ".log", save.getJSONArray("log").getStringArray());
+  if(netPlay) post(false);
+  saveJSONObject(save, "Saves/" + (netPlay?"@":"") + saveName + ".ncs");
+  saveStrings("Logs/" + (netPlay?"@":"") + saveName + ".log", save.getJSONArray("log").getStringArray());
 }
