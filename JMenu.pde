@@ -30,10 +30,10 @@ public class Menu_bar extends JFrame implements ActionListener {
     import_menu.setMnemonic('F');
     copy_save.setMnemonic('C');
     new_game.setMnemonic('N');
-    old_game.setMnemonic('L');
+    old_game.setMnemonic('L');/*
     web_game.setMnemonic('W');
     new_web_game.setMnemonic('S');
-    old_web_game.setMnemonic('J');
+    old_web_game.setMnemonic('J');*/
     action_exit.setMnemonic('E');
     options_menu.setMnemonic('O');
     animated.setMnemonic('R');
@@ -46,12 +46,12 @@ public class Menu_bar extends JFrame implements ActionListener {
     new_game.addActionListener(this);
     import_menu.add(new_game);
     old_game.addActionListener(this);
-    import_menu.add(old_game);
+    import_menu.add(old_game);/*
     new_web_game.addActionListener(this);
     web_game.add(new_web_game);
     old_web_game.addActionListener(this);
     web_game.add(old_web_game);
-    import_menu.add(web_game);
+    import_menu.add(web_game);*/
     import_menu.addSeparator();
     action_exit.addActionListener(this);
     import_menu.add(action_exit);

@@ -21,16 +21,16 @@ public class StartPopUp implements ActionListener {
     newGame.setText("New Game");
     newGame.addActionListener(this);
     loadGame.setText("Load Game");
-    loadGame.addActionListener(this);
+    loadGame.addActionListener(this);/*
     newWeb.setText("Start Web Game");
     newWeb.addActionListener(this);
     loadWeb.setText("Join Web Game");
-    loadWeb.addActionListener(this);
+    loadWeb.addActionListener(this);*/
     panel.setLayout(new FlowLayout());
     panel.add(newGame);
-    panel.add(loadGame);
+    panel.add(loadGame);/*
     panel.add(newWeb);
-    panel.add(loadWeb);
+    panel.add(loadWeb);*/
     parent.add(panel);
     parent.pack();
     parent.setSize((int)(parent.getWidth() * 0.6), (int)(parent.getHeight()*1.6));
