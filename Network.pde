@@ -26,6 +26,7 @@ public void getFromWeb(String name) { //test: L2B3JA8D
   JSONObject records = parseJSONObject(get.getContent());
   save = parseJSONObject(records.getJSONArray("records").getJSONObject(0).getString("board").replace("â\u2020\u2019", "→"));
   save.setString("netId", records.getJSONArray("records").getJSONObject(0).getInt("id") + "");
+  saveId = save.getInt("netId");
   saveJSONObject(save, "Saves/@" + save.getString("name")+".ncs");
   args = new String[1];
   args[0] = "Saves/@" + save.getString("name")+".ncs";
