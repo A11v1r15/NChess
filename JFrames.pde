@@ -190,6 +190,7 @@ public class NewWebGamePopUp implements ActionListener {
     parent.setVisible(false);
     webPlay = true;
     buildBoard();
+    save.setInt("netId", post(true));
     notStarted = false;
   }
 }
