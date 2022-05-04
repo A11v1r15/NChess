@@ -1,4 +1,4 @@
-boolean showCoords = false; //<>//
+boolean showCoords = false;
 JSONObject pBoard;
 JSONObject sBoard;
 int n = 2;
