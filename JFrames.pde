@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.filechooser.*;
+import javax.swing.UIManager;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.datatransfer.*;
@@ -23,14 +24,14 @@ public class StartPopUp implements ActionListener {
     loadGame.setText("Load Game");
     loadGame.addActionListener(this);/*
     newWeb.setText("Start Web Game");
-    newWeb.addActionListener(this);
-    loadWeb.setText("Join Web Game");
-    loadWeb.addActionListener(this);*/
+     newWeb.addActionListener(this);
+     loadWeb.setText("Join Web Game");
+     loadWeb.addActionListener(this);*/
     panel.setLayout(new FlowLayout());
     panel.add(newGame);
     panel.add(loadGame);/*
     panel.add(newWeb);
-    panel.add(loadWeb);*/
+     panel.add(loadWeb);*/
     parent.add(panel);
     parent.pack();
     parent.setSize((int)(parent.getWidth() * 0.6), (int)(parent.getHeight()*1.6));

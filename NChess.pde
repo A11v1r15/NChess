@@ -17,6 +17,17 @@ boolean webPlay = false;
 LogPopUp logPopUp;
 
 void setup() {
+  try {
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+  }
+  catch (UnsupportedLookAndFeelException e) {
+  }
+  catch (ClassNotFoundException e) {
+  }
+  catch (InstantiationException e) {
+  }
+  catch (IllegalAccessException e) {
+  }
   StartPopUp popup = new StartPopUp(this);
   size(600, 600);
   colorMode(HSB);
@@ -669,7 +680,7 @@ void Log(String log) {
 }
 
 void Save() {
-  if(webPlay) post(false);
+  if (webPlay) post(false);
   saveJSONObject(save, "Saves/" + (webPlay?"@":"") + saveName + ".ncs");
   saveStrings("Logs/" + (webPlay?"@":"") + saveName + ".log", save.getJSONArray("log").getStringArray());
 }
