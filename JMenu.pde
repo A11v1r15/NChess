@@ -15,6 +15,8 @@ public class Menu_bar extends JFrame implements ActionListener {
   JMenuItem drawCoords = new JMenuItem((showCoords?"☑":"☐")+" Show Coords");
   JMenuItem logView = new JMenuItem("View Log");
 
+  JMenu about_menu = new JMenu("About");
+  JMenuItem credits = new JMenuItem("Credits");
   JPanel panel;
 
   public Menu_bar(PApplet app) {
@@ -39,6 +41,8 @@ public class Menu_bar extends JFrame implements ActionListener {
     animated.setMnemonic('R');
     drawCoords.setMnemonic('C');
     logView.setMnemonic('L');
+    about_menu.setMnemonic('A');
+    credits.setMnemonic('D');
 
     menu_bar.add(import_menu);
     copy_save.addActionListener(this);
@@ -64,6 +68,11 @@ public class Menu_bar extends JFrame implements ActionListener {
     options_menu.addSeparator();
     logView.addActionListener(this);
     options_menu.add(logView);
+
+    menu_bar.add(about_menu);
+    credits.addActionListener(this);
+    about_menu.add(credits);
+    
     frame.setVisible(true);
   }
 
@@ -106,6 +115,8 @@ public class Menu_bar extends JFrame implements ActionListener {
       drawCoords.setText((showCoords?"☑":"☐")+" Show Coords");
     } else if (source == logView) {
       logPopUp = new LogPopUp(chain);
+    } else if (source == credits) {
+      CreditsPopUp creditsPopUp = new CreditsPopUp(chain);
     }
   }
 }

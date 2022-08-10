@@ -285,3 +285,24 @@ public class LogPopUp {
     playersPanel.setText(logText);
   }
 }
+
+
+public class CreditsPopUp {
+  PApplet chain;
+  final JFrame parent = new JFrame("Credits");
+  JLabel playersPanel = new JLabel();
+
+  public CreditsPopUp(PApplet app) {
+    chain = app;
+    JFrame frame = (JFrame) ((processing.awt.PSurfaceAWT.SmoothCanvas)app.getSurface().getNative()).getFrame();
+    playersPanel.setText("<html>Game created by <a href='https://github.com/a11v1r15/'>A11v1r15</a><br>Chess pieces from <a href ='https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces'>Wikimedia Commons</a></html>");
+    playersPanel.setVerticalAlignment(JLabel.NORTH);
+    parent.setLayout(new FlowLayout());
+    parent.add(playersPanel);
+    parent.pack();
+    parent.setSize(200, 120);
+    parent.setResizable(false);
+    parent.setLocation((displayWidth - parent.getWidth())/2, (displayHeight - parent.getHeight())/2);
+    parent.setVisible(true);
+  }
+}

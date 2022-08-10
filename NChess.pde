@@ -29,7 +29,7 @@ void setup() {
   catch (IllegalAccessException e) {
   }
   StartPopUp popup = new StartPopUp(this);
-  size(600, 600);
+  size(800, 800);
   colorMode(HSB);
   textAlign(CENTER);
   shapeMode(CENTER);
