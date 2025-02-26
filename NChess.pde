@@ -607,19 +607,19 @@ void mousePressed() {
     if (PVector.dist(new PVector(width/2-25, height/2-25), mouse) < 20) {
       pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "R");
       lastPlay += "R";
-    } else 
-    if (PVector.dist(new PVector(width/2+25, height/2-25), mouse) < 20) {
-      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "N");
-      lastPlay += "N";
-    } else 
-    if (PVector.dist(new PVector(width/2-25, height/2+25), mouse) < 20) {
-      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "B");
-      lastPlay += "B";
-    } else 
-    if (PVector.dist(new PVector(width/2+25, height/2+25), mouse) < 20) {
-      pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "Q");
-      lastPlay += "Q";
-    } 
+    } else
+      if (PVector.dist(new PVector(width/2+25, height/2-25), mouse) < 20) {
+        pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "N");
+        lastPlay += "N";
+      } else
+        if (PVector.dist(new PVector(width/2-25, height/2+25), mouse) < 20) {
+          pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "B");
+          lastPlay += "B";
+        } else
+          if (PVector.dist(new PVector(width/2+25, height/2+25), mouse) < 20) {
+            pBoard.setString(selected, (char)army(pBoard.getString(selected)) + "Q");
+            lastPlay += "Q";
+          }
     if (piece(pBoard.getString(selected)) != 'p') {
       inPromotion = false;
       selected = "";

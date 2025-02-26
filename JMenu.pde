@@ -22,7 +22,7 @@ public class Menu_bar extends JFrame implements ActionListener {
   public Menu_bar(PApplet app) {
     chain = app;
     frame = (JFrame) ((processing.awt.PSurfaceAWT.SmoothCanvas)app.getSurface().getNative()).getFrame();
-    panel =  new JPanel(); 
+    panel =  new JPanel();
     panel.setOpaque(false);
 
     // Creates a menubar for a JFrame
@@ -72,12 +72,12 @@ public class Menu_bar extends JFrame implements ActionListener {
     menu_bar.add(about_menu);
     credits.addActionListener(this);
     about_menu.add(credits);
-    
+
     frame.setVisible(true);
   }
 
   public void actionPerformed(ActionEvent e) {
-    String str = e.getActionCommand(); 
+    String str = e.getActionCommand();
 
     Object source = e.getSource();
     if (source == copy_save) {
